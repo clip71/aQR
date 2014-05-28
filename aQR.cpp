@@ -731,9 +731,9 @@ BYTE aQR::getGalois(BYTE cValue, bool bRevert)
 
     if (bRevert)
     {
-        for (BYTE rc=0; rc<256; rc++)
+        for (short rc=0; rc<256; rc++)
             if (aGalois[rc] == cValue)
-                return rc;
+                return (BYTE)rc;
         return 0;
     }
 
