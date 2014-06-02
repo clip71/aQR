@@ -165,7 +165,7 @@ BOOL CQRDlg::OnInitDialog()
 void CQRDlg::OnSize(UINT nType, int cx, int cy)
 {
     CDialog::OnSize(nType, cx, cy);
-/*
+
     CWnd* pEdit = GetDlgItem(IDC_EDIT);
     if (!pEdit)
         return;
@@ -174,7 +174,7 @@ void CQRDlg::OnSize(UINT nType, int cx, int cy)
 
     pEdit->GetWindowRect(&rcEdit);
     ScreenToClient(&rcEdit);
-    m_wndQR.MoveWindow(0, rcEdit.bottom, cx, cy - rcEdit.bottom);*/
+    m_wndQR.MoveWindow(0, rcEdit.bottom, cx, cy - rcEdit.bottom);
 }
 
 

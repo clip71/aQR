@@ -42,13 +42,22 @@ const QR_MAXIMUMS aQR::m_info[QR_MAX_VERSIONS+1] = {
    105, 1258, { 28, 28, 30, 24 }, {  9, 17, 23, 34 }, // 22
    109, 1364, { 30, 28, 30, 30 }, {  9, 18, 25, 30 }, // 23
    113, 1474, { 30, 28, 30, 30 }, { 10, 20, 27, 32 }, // 24
-
-    // данные для m_info[0].wModules
-    //1588,1706,1828,1921,2051,2185,
-    //2323,2465,2611,2761,2876,3034,3196,3362,3532,3706
-
-    // конец данных (убрать после полного заполнения)
-     0,   0, {  0,  0,  0,  0 }, {  0,  0,  0,  0 }
+   117, 1588, { 26, 28, 30, 30 }, { 12, 21, 29, 35 }, // 25
+   121, 1706, { 28, 28, 28, 30 }, { 12, 23, 34, 37 }, // 26
+   125, 1828, { 30, 28, 30, 30 }, { 12, 25, 34, 40 }, // 27
+   129, 1921, { 30, 28, 30, 30 }, { 13, 26, 35, 42 }, // 28
+   133, 2051, { 30, 28, 30, 30 }, { 14, 28, 38, 45 }, // 29
+   137, 2185, { 30, 28, 30, 30 }, { 15, 29, 40, 48 }, // 30
+   141, 2323, { 30, 28, 30, 30 }, { 16, 31, 43, 51 }, // 31
+   145, 2465, { 30, 28, 30, 30 }, { 17, 33, 45, 54 }, // 32
+   149, 2611, { 30, 28, 30, 30 }, { 18, 35, 48, 57 }, // 33
+   153, 2761, { 30, 28, 30, 30 }, { 19, 37, 51, 60 }, // 34
+   157, 2876, { 30, 28, 30, 30 }, { 19, 38, 53, 63 }, // 35
+   161, 3034, { 30, 28, 30, 30 }, { 20, 40, 56, 66 }, // 36
+   165, 3196, { 30, 28, 30, 30 }, { 21, 43, 59, 70 }, // 37
+   169, 3362, { 30, 28, 30, 30 }, { 22, 45, 62, 74 }, // 38
+   173, 3532, { 30, 28, 30, 30 }, { 24, 47, 65, 77 }, // 39
+   177, 3706, { 30, 28, 30, 30 }, { 25, 49, 68, 81 }, // 40
 };
 
 
@@ -90,7 +99,7 @@ int aQR::init(const BYTE* pszString, int nLength, int nEcl, int nMask)
 
     //
     int nRC = calcVersion(nLength);
-    if (nRC <= 0 || nRC >= QR_MAX_VERSIONS)
+    if (nRC <= 0 || nRC > QR_MAX_VERSIONS)
         return -1;
 
     fillServiceInfo();
@@ -113,9 +122,9 @@ int aQR::init(const BYTE* pszString, int nLength, int nEcl, int nMask)
     short nBlocks = getNumBlocks();
     int nOffset;
     memset(&nxy, 0, sizeof nxy);
-#ifdef _DEBUG
-//char szBuff[8192], szBuff1[128]; szBuff[0] = '\0'; int nblks = 0;
-#endif
+//#ifdef _DEBUG
+//char szBuff[64*1024], szBuff1[128]; szBuff[0] = '\0'; int nblks = 0;
+//#endif
     for (int i=0; i<m_nDataSize; i++)
     {
         nOffset = getBlockIndex(i, m_nDataSize);
@@ -141,19 +150,19 @@ int aQR::init(const BYTE* pszString, int nLength, int nEcl, int nMask)
         int nDataBlockSize = getBlockSize(b, m_nDataSize);
         int nDataBlockStart = getBlockOffset(b, m_nDataSize);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 //sprintf_s(szBuff1, sizeof szBuff1, "%d %d %d %d/%d\n", b, nDataBlockStart, nDataBlockSize, nBlocks, m_nDataSize);
 //strcat_s(szBuff, sizeof szBuff, szBuff1);
 //nblks += nDataBlockSize;
-#endif
+//#endif
         short nEcBlockStart = b * nEcBlockSize;
 
         getEc(&ec[nEcBlockStart], nEcBlockSize, &m_szData[nDataBlockStart], nDataBlockSize);
     }
-#ifdef _DEBUG
+//#ifdef _DEBUG
 //sprintf_s(szBuff1, sizeof szBuff1, "%d\n", nblks); strcat_s(szBuff, sizeof szBuff, szBuff1);
 //AfxMessageBox(szBuff);
-#endif
+//#endif
 
     for (int i=0; i<nEcBlockSize*nBlocks; i++)
     {
