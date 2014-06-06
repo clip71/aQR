@@ -5,7 +5,7 @@ Usage:
   #define MASK_AUTO -1
   
     aQR qr;
-    qr.init("Hello, World!", strlen(Hello, World!), QR_LEVEL_L, MASK_AUTO);
+    qr.init("Hello, World!", strlen("Hello, World!"), QR_LEVEL_L, MASK_AUTO);
 
     for (int x=0; x<qr.getSizeXY(); x++)
     {
