@@ -1,14 +1,13 @@
-/*
+п»ї/*
  * aQR - QR Code encoder class C++
  *
  * version 0.3.2 - 19.05.2014
  *
- * Copyright (C) 2014 OJSC Introtest, Tyumenska region, Surgut
- * Konstantin Slabouzov <slabouzov@introtest.com>
+ * Copyright (C) 2014 Tyumenska region, Surgut
+ * Konstantin Slabouzov <clip71@inbox.ru>
  *
  * temporary restrictions:
  *   support QR_ENC_BYTE only
- *   only 24 version (fill m_info)
  */
 
 #include <stdio.h>
@@ -16,7 +15,7 @@
 #include <string.h>
 #include "aQR.h"
 
-const QR_MAXIMUMS aQR::m_info[QR_MAX_VERSIONS+1] = {
+const aQR::QR_MAXIMUMS aQR::m_info[QR_MAX_VERSIONS+1] = {
      0,    0, {  0,  0,  0,  0 }, {  0,  0,  0,  0 }, 
     21,   26, {  7, 10, 13, 17 }, {  1,  1,  1,  1 }, // 1
     25,   44, { 10, 16, 22, 28 }, {  1,  1,  1,  1 }, // 2
@@ -66,7 +65,7 @@ aQR::aQR(void)
     memset(m_pixels, 0, sizeof m_pixels);
     memset(m_szData, 0, sizeof m_szData);
 
-    m_nEncoding = QR_ENC_BYTE; // пока только QR_ENC_BYTE
+    m_nEncoding = QR_ENC_BYTE; // РїРѕРєР° С‚РѕР»СЊРєРѕ QR_ENC_BYTE
     m_nVersion = 0;
     m_nMask = -1;
     m_nEcl = QR_LEVEL_M;
@@ -108,7 +107,7 @@ int aQR::init(const BYTE* pszString, int nLength, int nEcl, int nMask)
     //
     m_nDataSize = getData(m_szData, sizeof m_szData, pszString, nLength);
 
-    // дополняем байтами 236 и 17 не заполненные поля
+    // РґРѕРїРѕР»РЅСЏРµРј Р±Р°Р№С‚Р°РјРё 236 Рё 17 РЅРµ Р·Р°РїРѕР»РЅРµРЅРЅС‹Рµ РїРѕР»СЏ
     int nBitsOffset = m_nDataSize * 8;
     for (int i=m_nDataSize,nOdd=0; i<getDataSize(); i++,nOdd++)
     {
@@ -117,30 +116,18 @@ int aQR::init(const BYTE* pszString, int nLength, int nEcl, int nMask)
         m_nDataSize++;
     }
 
-    // заполнение матрицы
+    // Р·Р°РїРѕР»РЅРµРЅРёРµ РјР°С‚СЂРёС†С‹
     QR_NEXT_XY nxy;
     short nBlocks = getNumBlocks();
     int nOffset;
     memset(&nxy, 0, sizeof nxy);
-//#ifdef _DEBUG
-//char szBuff[64*1024], szBuff1[128]; szBuff[0] = '\0'; int nblks = 0;
-//#endif
+
     for (int i=0; i<m_nDataSize; i++)
     {
         nOffset = getBlockIndex(i, m_nDataSize);
 
-//#ifdef _DEBUG
-//if (i % nBlocks == 0)
-//    strcat_s(szBuff, sizeof szBuff, "\n");
-//sprintf_s(szBuff1, sizeof szBuff1, "%02d %02d %03d,  ", i, nOffset, m_szData[nOffset]);
-//strcat_s(szBuff, sizeof szBuff, szBuff1);
-//#endif
         pushByte(nxy, m_bShowData ? m_szData[nOffset] : 0);
     }
-#ifdef _DEBUG
-//AfxMessageBox(szBuff);
-//szBuff[0] = '\0';
-#endif
 
     BYTE ec[81 * 30];
     short nEcBlockSize = m_info[m_nVersion].ec[m_nEcl];
@@ -150,19 +137,10 @@ int aQR::init(const BYTE* pszString, int nLength, int nEcl, int nMask)
         int nDataBlockSize = getBlockSize(b, m_nDataSize);
         int nDataBlockStart = getBlockOffset(b, m_nDataSize);
 
-//#ifdef _DEBUG
-//sprintf_s(szBuff1, sizeof szBuff1, "%d %d %d %d/%d\n", b, nDataBlockStart, nDataBlockSize, nBlocks, m_nDataSize);
-//strcat_s(szBuff, sizeof szBuff, szBuff1);
-//nblks += nDataBlockSize;
-//#endif
         short nEcBlockStart = b * nEcBlockSize;
 
         getEc(&ec[nEcBlockStart], nEcBlockSize, &m_szData[nDataBlockStart], nDataBlockSize);
     }
-//#ifdef _DEBUG
-//sprintf_s(szBuff1, sizeof szBuff1, "%d\n", nblks); strcat_s(szBuff, sizeof szBuff, szBuff1);
-//AfxMessageBox(szBuff);
-//#endif
 
     for (int i=0; i<nEcBlockSize*nBlocks; i++)
     {
@@ -170,10 +148,10 @@ int aQR::init(const BYTE* pszString, int nLength, int nEcl, int nMask)
         pushByte(nxy, m_bShowEc ? ec[nOffset] : 0);
     }
 
-    // маска
+    // РјР°СЃРєР°
     if (m_bShowMask)
     {
-        // если маска не задана, то поищем автоматически
+        // РµСЃР»Рё РјР°СЃРєР° РЅРµ Р·Р°РґР°РЅР°, С‚Рѕ РїРѕРёС‰РµРј Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё
         if (m_nMask < 0)
         {
             calcBestMask();
@@ -195,19 +173,19 @@ int aQR::calcVersion(int nDataSize)
         if (wSize == 0)
             break;
 
-        // проверим на вместимость: данных + размера поля данных + (0.5 + 0.5) тип данных и конец
+        // РїСЂРѕРІРµСЂРёРј РЅР° РІРјРµСЃС‚РёРјРѕСЃС‚СЊ: РґР°РЅРЅС‹С… + СЂР°Р·РјРµСЂР° РїРѕР»СЏ РґР°РЅРЅС‹С… + (0.5 + 0.5) С‚РёРї РґР°РЅРЅС‹С… Рё РєРѕРЅРµС†
         if (wSize >= nDataSize + getDataLengthBits() + 1)
             return m_nVersion;
     }
 
-    //ASSERT(0); // таблица не заполнена или переполнение
+    //ASSERT(0); // С‚Р°Р±Р»РёС†Р° РЅРµ Р·Р°РїРѕР»РЅРµРЅР° РёР»Рё РїРµСЂРµРїРѕР»РЅРµРЅРёРµ
     return -1;
 }
 
 
 void aQR::fillServiceInfo()
 {
-    // поисковые узоры
+    // РїРѕРёСЃРєРѕРІС‹Рµ СѓР·РѕСЂС‹
     fillFinderPattern(0, 0);
     fillFinderPattern(0, getSizeXY() - 7);
     fillFinderPattern(getSizeXY() - 7, 0);
@@ -226,22 +204,22 @@ void aQR::fillServiceInfo()
     // 
     fillAligmentPatterns();
 
-    // пиксель всегда черен
+    // РїРёРєСЃРµР»СЊ РІСЃРµРіРґР° С‡РµСЂРµРЅ
     setPixel(8, getSizeXY() - 8, QR_VALUE_FP1);
 
-    // Полосы синхронизации
-    // всегда после fillAligmentPatterns(), т.к. пересекаются с выравнивающими узорами
+    // РџРѕР»РѕСЃС‹ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё
+    // РІСЃРµРіРґР° РїРѕСЃР»Рµ fillAligmentPatterns(), С‚.Рє. РїРµСЂРµСЃРµРєР°СЋС‚СЃСЏ СЃ РІС‹СЂР°РІРЅРёРІР°СЋС‰РёРјРё СѓР·РѕСЂР°РјРё
     for (int x=8; x<getSizeXY()-8; x++) {
         setPixel(x, 6, x & 1 ? QR_VALUE_FP0 : QR_VALUE_FP1);
         setPixel(6, x, x & 1 ? QR_VALUE_FP0 : QR_VALUE_FP1);
     }
 
-    // служебная информация
+    // СЃР»СѓР¶РµР±РЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ
     fillFormatInfo();
 }
 
 
-// Код версии
+// РљРѕРґ РІРµСЂСЃРёРё
 void aQR::fillVersionCode()
 {
     if (m_nVersion < 7)
@@ -327,7 +305,7 @@ void aQR::fillFinderPattern(int nX, int nY)
 
 void aQR::fillAligmentPattern(int nX, int nY)
 {
-    // проверка на попадание на служебную область (поисковые узоры)
+    // РїСЂРѕРІРµСЂРєР° РЅР° РїРѕРїР°РґР°РЅРёРµ РЅР° СЃР»СѓР¶РµР±РЅСѓСЋ РѕР±Р»Р°СЃС‚СЊ (РїРѕРёСЃРєРѕРІС‹Рµ СѓР·РѕСЂС‹)
     bool bFree = true;
     for (int x=0; x<5 && bFree; x++) {
         for (int y=0; y<5 && bFree; y++) {
@@ -338,7 +316,7 @@ void aQR::fillAligmentPattern(int nX, int nY)
     if (!bFree)
         return;
 
-    // нарисуем выравнивающий узор на пустом месте
+    // РЅР°СЂРёСЃСѓРµРј РІС‹СЂР°РІРЅРёРІР°СЋС‰РёР№ СѓР·РѕСЂ РЅР° РїСѓСЃС‚РѕРј РјРµСЃС‚Рµ
     for (int x=0; x<5; x++) {
         for (int y=0; y<5; y++) {
             setPixel(nX + x - 2, nY + y - 2, QR_VALUE_FP1);
@@ -754,17 +732,17 @@ short aQR::getData(BYTE* pData, int nDataSize, const BYTE* pInput, int nInputSiz
 {
     int nBitsOffset = 0;
 
-    // формат данных
-    // возможно вставить сюда автоопределение
+    // С„РѕСЂРјР°С‚ РґР°РЅРЅС‹С…
+    // РІРѕР·РјРѕР¶РЅРѕ РІСЃС‚Р°РІРёС‚СЊ СЃСЋРґР° Р°РІС‚РѕРѕРїСЂРµРґРµР»РµРЅРёРµ
     pushData(pData, nDataSize, nBitsOffset, m_nEncoding, 4);
 
-    // поле количества данных
+    // РїРѕР»Рµ РєРѕР»РёС‡РµСЃС‚РІР° РґР°РЅРЅС‹С…
     pushData(pData, nDataSize, nBitsOffset, nInputSize, getDataLengthBits() * 8);
 
     for (int i=0; i<nInputSize; i++)
         pushData(pData, nDataSize, nBitsOffset, pInput[i], 8);
 
-    // конец данных
+    // РєРѕРЅРµС† РґР°РЅРЅС‹С…
     pushData(pData, nDataSize, nBitsOffset, 0, 4);
 
     return (short)(nBitsOffset-1) / 8 + 1;
@@ -773,7 +751,7 @@ short aQR::getData(BYTE* pData, int nDataSize, const BYTE* pInput, int nInputSiz
 
 int aQR::getEc(BYTE* pEc, int nEcSize, BYTE* pData, int nDataSize)
 {
-    // байты коррекции
+    // Р±Р°Р№С‚С‹ РєРѕСЂСЂРµРєС†РёРё
     BYTE aGenPoly[QR_MAX_CORR_BYTES];
     memset(aGenPoly, 0, sizeof aGenPoly);
 
@@ -872,7 +850,7 @@ bool aQR::pushByte(QR_NEXT_XY &nxy, BYTE cByte)
     for (int j=0; j<8 && nxy.x>=0; j++)
     {
         if (!pushPixel(nxy, cByte & 0x80 ? 1 : 0))
-            return false; // что то не так, не хватило места
+            return false; // С‡С‚Рѕ С‚Рѕ РЅРµ С‚Р°Рє, РЅРµ С…РІР°С‚РёР»Рѕ РјРµСЃС‚Р°
         cByte <<= 1;
     }
     return true;
@@ -881,7 +859,7 @@ bool aQR::pushByte(QR_NEXT_XY &nxy, BYTE cByte)
 
 bool aQR::pushData(BYTE* pData, int nDataSize, int& nBitsOffset, unsigned int nData, int nBits)
 {
-    // если вдруг переполнение, то прервемся
+    // РµСЃР»Рё РІРґСЂСѓРі РїРµСЂРµРїРѕР»РЅРµРЅРёРµ, С‚Рѕ РїСЂРµСЂРІРµРјСЃСЏ
     if (nBitsOffset/8 >= nDataSize)
         return false;
 
@@ -911,7 +889,7 @@ bool aQR::pushData(BYTE* pData, int nDataSize, int& nBitsOffset, unsigned int nD
             dwMaskData >>= 1;
         }
 
-        // если вдруг переполнение, то прервемся
+        // РµСЃР»Рё РІРґСЂСѓРі РїРµСЂРµРїРѕР»РЅРµРЅРёРµ, С‚Рѕ РїСЂРµСЂРІРµРјСЃСЏ
         if (nBitsOffset/8 >= nDataSize)
             return false;
     }
@@ -922,20 +900,17 @@ bool aQR::pushData(BYTE* pData, int nDataSize, int& nBitsOffset, unsigned int nD
 
 void aQR::calcBestMask()
 {
-#ifdef _DEBUG
-char szBuff[1024], szBuff1[128]; szBuff[0] = '\0';
-#endif
     short nBestMask = -1;
     short nBestCost = -1;
     for (m_nMask=0; m_nMask<8; m_nMask++)
     {
         fillFormatInfo();
-        fillMask(); // выставим маску
+        fillMask(); // РІС‹СЃС‚Р°РІРёРј РјР°СЃРєСѓ
         short nCost1 = checkPenaltyRule1();
         short nCost2 = checkPenaltyRule2();
         short nCost3 = checkPenaltyRule3();
         short nCost4 = checkPenaltyRule4();
-        fillMask(); // снесем маску
+        fillMask(); // СЃРЅРµСЃРµРј РјР°СЃРєСѓ
 
         short nCost = nCost1 + nCost2 + nCost3 + nCost4;
         if (nCost < nBestCost || nBestCost < 0) {
@@ -943,21 +918,10 @@ char szBuff[1024], szBuff1[128]; szBuff[0] = '\0';
             nBestCost = nCost;
         }
 
-#ifdef _DEBUG
-sprintf_s(szBuff1, sizeof szBuff1, "%d %3d + %3d + %3d + %3d = %3d\n",
-          m_nMask, nCost1, nCost2, nCost3, nCost4, nCost);
-strcat_s(szBuff, sizeof szBuff, szBuff1);
-#endif
     }
 
     m_nMask = nBestMask;
     fillFormatInfo();
-
-#ifdef _DEBUG
-sprintf_s(szBuff1, sizeof szBuff1, "best mask %d %d", m_nMask, nBestCost);
-strcat_s(szBuff, sizeof szBuff, szBuff1);
-//AfxMessageBox(szBuff);
-#endif
 }
 
 

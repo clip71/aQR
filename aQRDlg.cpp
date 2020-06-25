@@ -286,8 +286,7 @@ int CQRDlg::Encode()
     char szUtf8[10000];
     ANSItoUTF8(szUtf8, sizeof szUtf8, LPCTSTR(m_strText));
 
-    int nRC = m_qr.init((BYTE*)szUtf8, (short)strlen(szUtf8), m_nEcl, m_nMask);
-    //int nRC = m_qr.init((BYTE*)LPCTSTR(m_strText), (short)m_strText.GetLength(), m_nEcl, m_nMask);
+    int nRC = m_qr.init((BYTE*)LPCTSTR(m_strText), (short)m_strText.GetLength(), m_nEcl, m_nMask);
 
     CRect rcWnd;
     int nSize = m_qr.getSizeXY();

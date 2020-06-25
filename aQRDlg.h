@@ -1,5 +1,5 @@
-
-// aQRDlg.h : файл заголовка
+п»ї
+// aQRDlg.h : С„Р°Р№Р» Р·Р°РіРѕР»РѕРІРєР°
 //
 
 #pragma once
@@ -8,20 +8,20 @@
 #include "aQR.h"
 #include "QRWnd.h"
 
-// диалоговое окно CQRDlg
+// РґРёР°Р»РѕРіРѕРІРѕРµ РѕРєРЅРѕ CQRDlg
 class CQRDlg : public CDialog
 {
-// Создание
+// РЎРѕР·РґР°РЅРёРµ
 public:
-	CQRDlg(CWnd* pParent = NULL);	// стандартный конструктор
+	CQRDlg(CWnd* pParent = NULL);	// СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 
     int Encode();
 
-// Данные диалогового окна
+// Р”Р°РЅРЅС‹Рµ РґРёР°Р»РѕРіРѕРІРѕРіРѕ РѕРєРЅР°
 	enum { IDD = IDD_AQR_DIALOG };
 
     aQR m_qr;
-    bool m_bReady; // признак готовности, для избежания излишней работы
+    bool m_bReady; // РїСЂРёР·РЅР°Рє РіРѕС‚РѕРІРЅРѕСЃС‚Рё, РґР»СЏ РёР·Р±РµР¶Р°РЅРёСЏ РёР·Р»РёС€РЅРµР№ СЂР°Р±РѕС‚С‹
 
     short m_nEcl;
     short m_nMask;
@@ -32,10 +32,10 @@ public:
     BOOL m_bShowMask;
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);	// поддержка DDX/DDV
+	virtual void DoDataExchange(CDataExchange* pDX);	// РїРѕРґРґРµСЂР¶РєР° DDX/DDV
 
 
-// Реализация
+// Р РµР°Р»РёР·Р°С†РёСЏ
 protected:
 	HICON m_hIcon;
 
@@ -43,7 +43,7 @@ protected:
     CComboBox m_cbMask;
     CQRWnd m_wndQR;
 
-	// Созданные функции схемы сообщений
+	// РЎРѕР·РґР°РЅРЅС‹Рµ С„СѓРЅРєС†РёРё СЃС…РµРјС‹ СЃРѕРѕР±С‰РµРЅРёР№
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();

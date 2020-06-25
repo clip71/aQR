@@ -53,16 +53,7 @@ void CQRWnd::draw(CDC* pDC, int nX, int nY)
     pDC->FillSolidRect(nX, nY,
         nX + m_pQR->m_nQuiteZone * 2 + m_pQR->getSizeXY()*m_pQR->m_nPixelSize,
         nY + m_pQR->m_nQuiteZone * 2 + m_pQR->getSizeXY()*m_pQR->m_nPixelSize, RGB(255,255,255));
-/*
-    CFont font;
-    LOGFONT lf;
 
-    memset(&lf, 0, sizeof lf);
-    lf.lfHeight = -8;
-    strcpy_s(lf.lfFaceName, sizeof lf.lfFaceName, "Courier");
-    font.CreateFontIndirect(&lf);
-    CFont* pFontOld = pDC->SelectObject(&font);
-*/
     for (int x=0; x<nSize; x++)
     {
         for (int y=0; y<nSize; y++)
@@ -98,22 +89,4 @@ void CQRWnd::draw(CDC* pDC, int nX, int nY)
 
         }
     }
-/*
-    int nVerticalOffset = 0;
-    for (int n=0; n<getSizeXY()/2; n++)
-    {
-        if (n > 3)
-            nVerticalOffset = 1;
-        pDC->MoveTo(nX + (n*2+nVerticalOffset)*m_nPixelSize + m_nQuiteZone, nY + m_nQuiteZone);
-        pDC->LineTo(nX + (n*2+nVerticalOffset)*m_nPixelSize + m_nQuiteZone, nY + getSizeXY()*m_nPixelSize + m_nQuiteZone);
-    }
-
-    for (int n=0; n<getSizeXY()/4; n++)
-    {
-        pDC->MoveTo(nX + m_nQuiteZone, nY + (n*4+nVerticalOffset)*m_nPixelSize + m_nQuiteZone);
-        pDC->LineTo(nX + getSizeXY()*m_nPixelSize + m_nQuiteZone, nY + (n*4+nVerticalOffset)*m_nPixelSize + m_nQuiteZone);
-    }
-*/
-    //pDC->SelectObject(pFontOld);
-    //font.DeleteObject();
 }

@@ -39,38 +39,38 @@
 #define QR_VALUE_FP0 254
 
 
-typedef struct _QR_MAXIMUMS {
-    WORD wSizeXY;
-    WORD wModules;
-    WORD ec[4];
-    BYTE blocks[4];
-} QR_MAXIMUMS;
-
-
-typedef struct _QR_MASK_ECL {
-    char cLevel;
-    char cMask;
-    WORD wCode;
-} QR_MASK_ECL;
-
-
-typedef struct _QR_NEXT_XY {
-    short x;
-    short y;
-    WORD nColumn;
-    char nDirectionY;
-    char bVerticalTiming;
-} QR_NEXT_XY;
-
-typedef struct tagQR_POINT
-{
-    short x;
-    short y;
-} QR_POINT;
-
-
 class aQR
 {
+public:
+
+    typedef struct _QR_MAXIMUMS {
+        WORD wSizeXY;
+        WORD wModules;
+        WORD ec[4];
+        BYTE blocks[4];
+    } QR_MAXIMUMS;
+
+    typedef struct _QR_MASK_ECL {
+        char cLevel;
+        char cMask;
+        WORD wCode;
+    } QR_MASK_ECL;
+
+
+    typedef struct _QR_NEXT_XY {
+        short x;
+        short y;
+        WORD nColumn;
+        char nDirectionY;
+        char bVerticalTiming;
+    } QR_NEXT_XY;
+
+    typedef struct tagQR_POINT
+    {
+        short x;
+        short y;
+    } QR_POINT;
+
 public:
     aQR(void);
     ~aQR(void);
